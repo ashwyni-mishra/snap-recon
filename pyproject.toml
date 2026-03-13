@@ -17,6 +17,7 @@ dependencies = [
 snaprecon = "snaprecon:main"
 
 [tool.setuptools]
+package-dir = {"" = "src"}
 packages = ["core", "modules"]
 py-modules = ["snaprecon"]
 
