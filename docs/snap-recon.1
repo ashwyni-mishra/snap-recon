@@ -1,0 +1,58 @@
+.TH SNAPRECON 1 "March 2026" "Snap-Recon 1.0" "Snap-Recon Manual"
+.SH NAME
+snaprecon \- Rapid Professional Reconnaissance Framework
+.SH SYNOPSIS
+.B snaprecon
+[\fIOPTIONS\fR] \fB-d\fR \fIDOMAIN\fR
+.SH DESCRIPTION
+.B snaprecon
+is a high-performance modular CLI reconnaissance framework for ethical security testing and bug bounty hunting. It automates domain intelligence gathering, subdomain discovery, port scanning, and vulnerability assessment.
+.SH OPTIONS
+.TP
+\fB\-d\fR, \fB\-\-domain\fR \fIDOMAIN\fR
+Target domain to perform reconnaissance on (e.g., example.com).
+.TP
+\fB\-\-all\fR
+Run all available modules against the target.
+.TP
+\fB\-\-whois\fR
+Perform a WHOIS lookup to identify domain registration details.
+.TP
+\fB\-\-dns\fR
+Enumerate standard DNS records (A, AAAA, MX, NS, TXT).
+.TP
+\fB\-\-subdomains\fR
+Discover subdomains using active resolving and multi-threading.
+.TP
+\fB\-\-ports\fR
+Scan for common open ports and attempt service banner grabbing.
+.TP
+\fB\-\-tech\fR
+Detect server-side technologies and web server versions.
+.TP
+\fB\-\-headers\fR
+Inspect HTTP security headers for common misconfigurations.
+.TP
+\fB\-\-dirs\fR
+Perform directory and file brute-forcing to discover hidden content.
+.TP
+\fB\-w\fR, \fB\-\-wordlist\fR \fIFILE\fR
+Path to a custom wordlist for subdomains and directory discovery.
+.TP
+\fB\-t\fR, \fB\-\-threads\fR \fINUMBER\fR
+Set the number of concurrent threads (default: 10).
+.TP
+\fB\-\-download-wordlist\fR
+Download a professional expert wordlist from the SecLists repository.
+.SH EXAMPLES
+.B snaprecon -d google.com --all
+.br
+Runs all reconnaissance modules against google.com.
+.PP
+.B snaprecon -d example.com --subdomains --ports -t 50
+.br
+Performs subdomain discovery and port scanning with 50 threads.
+.SH AUTHOR
+Developed by syn9 (GitHub: ashwyni-mishra).
+.SH REPORTING BUGS
+Report bugs at https://github.com/ashwyni-mishra/snap-recon/issues.

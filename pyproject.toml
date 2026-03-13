@@ -1,0 +1,29 @@
+[project]
+name = "snaprecon"
+version = "1.0.0"
+description = "Rapid Reconnaissance Framework"
+authors = [
+    { name = "syn9", email = "syn9@example.com" }
+]
+dependencies = [
+    "python-whois",
+    "dnspython",
+    "requests",
+    "rich",
+    "beautifulsoup4",
+]
+
+[project.scripts]
+snaprecon = "snaprecon:main"
+
+[tool.setuptools]
+packages = ["core", "modules"]
+py-modules = ["snaprecon"]
+
+[tool.setuptools.package-data]
+"*" = ["wordlists/*.txt", "docs/snap-recon.1"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core", "modules"]
+exclude = ["wordlists", "tests", "reports", "docs"]

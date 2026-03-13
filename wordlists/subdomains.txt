@@ -1,0 +1,6 @@
+API
+admin
+dev
+test
+staging
+backup
