@@ -21,9 +21,4 @@ packages = ["core", "modules"]
 py-modules = ["snaprecon"]
 
 [tool.setuptools.package-data]
-"*" = ["wordlists/*.txt", "docs/snap-recon.1"]
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["core", "modules"]
-exclude = ["wordlists", "tests", "reports", "docs"]
+core = ["wordlists/*.txt"]

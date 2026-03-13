@@ -23,13 +23,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dirs", action="store_true", help="Run directory discovery")
     parser.add_argument("--ssl", action="store_true", help="Run SSL/TLS scanner")
     parser.add_argument("--wayback", action="store_true", help="Fetch URLs from Wayback Machine")
-    parser.add_argument("--list-wordlists", action="store_true", help="List available wordlists in wordlists/")
+    parser.add_argument("--list-wordlists", action="store_true", help="List available wordlists in the package")
     parser.add_argument("--download-wordlist", action="store_true", help="Download a larger professional wordlist")
     parser.add_argument(
         "-w",
         "--wordlist",
-        default="wordlists/default.txt",
-        help="Path to custom wordlist (can be multiple separated by comma)",
+        help="Path to custom wordlist (can be multiple separated by comma). If not provided, uses default.txt from package.",
     )
     parser.add_argument("-t", "--threads", type=int, default=10, help="Number of threads for concurrent tasks")
     return parser.parse_args()

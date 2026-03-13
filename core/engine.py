@@ -42,6 +42,15 @@ class ReconEngine:
         self.recommendations: List[str] = []
         self.smart_words: Set[str] = set()
 
+        # Resolve wordlists path relative to package
+        self.package_dir = os.path.dirname(os.path.abspath(__file__))
+        self.default_wordlist_dir = os.path.join(self.package_dir, "wordlists")
+        
+        if not self.args.wordlist:
+            self.wordlists = [os.path.join(self.default_wordlist_dir, "default.txt")]
+        else:
+            self.wordlists = [wl.strip() for wl in self.args.wordlist.split(",")]
+
     def run_all(self) -> None:
         """Execute all requested reconnaissance tasks."""
         if self.args.download_wordlist:
@@ -66,15 +75,14 @@ class ReconEngine:
 
         # 2. Parallel Tasks
         tasks = []
-        wordlists = self.args.wordlist.split(",")
 
         with ThreadPoolExecutor(max_workers=self.args.threads) as executor:
             if self.args.subdomains or self.args.all:
-                for wl in wordlists:
+                for wl in self.wordlists:
                     tasks.append(
                         (
                             "subdomains",
-                            executor.submit(subdomain_enum.run, self.domain, wl.strip(), self.args.threads),
+                            executor.submit(subdomain_enum.run, self.domain, wl, self.args.threads),
                         )
                     )
 
@@ -88,8 +96,8 @@ class ReconEngine:
                 tasks.append(("headers", executor.submit(security_checks.run, self.domain)))
 
             if self.args.dirs or self.args.all:
-                for wl in wordlists:
-                    tasks.append(("dirs", executor.submit(dir_scan.run, self.domain, wl.strip(), self.args.threads)))
+                for wl in self.wordlists:
+                    tasks.append(("dirs", executor.submit(dir_scan.run, self.domain, wl, self.args.threads)))
 
             if self.args.wayback or self.args.all:
                 tasks.append(("wayback", executor.submit(wayback_urls.run, self.domain)))
@@ -128,15 +136,15 @@ class ReconEngine:
             "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/"
             "Web-Content/directory-list-2.3-small.txt"
         )
-        save_path = os.path.join("wordlists", "seclist_directories.txt")
+        save_path = os.path.join(self.default_wordlist_dir, "seclist_directories.txt")
         try:
             response = requests.get(url, stream=True, timeout=30)
             if response.status_code == 200:
+                os.makedirs(self.default_wordlist_dir, exist_ok=True)
                 with open(save_path, "wb") as f:
                     for chunk in response.iter_content(chunk_size=8192):
                         f.write(chunk)
                 Logger.success(f"Professional wordlist saved to {save_path}")
-                Logger.info(f"You can now use it with: -w {save_path}")
             else:
                 Logger.error(f"Failed to download wordlist. Status code: {response.status_code}")
         except Exception as e:
@@ -144,14 +152,13 @@ class ReconEngine:
 
     def list_available_wordlists(self) -> None:
         """List all files in the wordlists directory."""
-        wordlist_dir = "wordlists"
-        if os.path.exists(wordlist_dir):
-            files = [f for f in os.listdir(wordlist_dir) if os.path.isfile(os.path.join(wordlist_dir, f))]
+        if os.path.exists(self.default_wordlist_dir):
+            files = [f for f in os.listdir(self.default_wordlist_dir) if os.path.isfile(os.path.join(self.default_wordlist_dir, f))]
             table = Table(title="Available Wordlists")
             table.add_column("File Name", style="cyan")
-            table.add_column("Path", style="green")
+            table.add_column("Full Path", style="green")
             for f in files:
-                table.add_row(f, os.path.join(wordlist_dir, f))
+                table.add_row(f, os.path.join(self.default_wordlist_dir, f))
             console.print(table)
         else:
             Logger.error("Wordlists directory not found")
